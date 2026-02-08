@@ -32,17 +32,8 @@ By default the application is setup to use Open Street Map.
 No maps license key is required in this case.
 This mapping service is attributed to the [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors.
 
-It is possible to change the setup so that the application uses Google Maps instead.
-The following code changes are needed.
-
-* In `gradle.properties`, the line containing `org.gradle.project.map=google_map` must be uncommented
-* In `activity_debug.xml`, the class reference must be changed to `AircraftMapView`
-* In `main_menu.xml`, the section defining Map Type must be uncommented
-* In `AircraftMapView.java`, in the function `changeMapType()`, the code must be uncommented
-* In `DebugActivity.java`, in the function `onCreateOptionsMenu()`, the code must be uncommented
-
-This variation system is far from ideal.
-If anyone with better Android coding skills is able to modify the code to make it easier to swap between the two different map systems, improvements would be greatly appreciated.
+It is possible to compile the application so it uses Google Maps instead.
+In `gradle.properties`, change the `org.gradle.project.map` flag to be either `google_map` or `osm`.
 
 For full functionality when using Google Maps, before building the source, you need to obtain a Google Maps API key.
 Without the key, the application can be started and will pick up transmitted signals and will show those in the list and detailed info views, but the map view will not work.
