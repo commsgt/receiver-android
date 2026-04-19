@@ -72,7 +72,10 @@ public class BleScanner {
     private void runScan() {
         while (running) {
             try {
-                proc = new ProcessBuilder("python3", scriptPath)
+                // Use PYTHON env var to point at a venv python if needed
+                // e.g.: export PYTHON=/home/pi/venv/bin/python3
+                String python = System.getenv("PYTHON") != null ? System.getenv("PYTHON") : "python3";
+                proc = new ProcessBuilder(python, scriptPath)
                         .redirectErrorStream(false)
                         .start();
 
