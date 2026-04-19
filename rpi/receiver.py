@@ -315,7 +315,7 @@ def gps_reader(data_manager: DataManager):
 
 # ─── BLE scanner (bleak) ─────────────────────────────────────────────────────
 
-def ble_scanner(data_manager: DataManager, logger=None):
+def ble_scanner(data_manager: DataManager, adapter: str = None, logger=None):
     try:
         from bleak import BleakScanner
     except ImportError:
@@ -334,9 +334,12 @@ def ble_scanner(data_manager: DataManager, logger=None):
             data_manager.receive(raw, 2, device.address,
                                  adv.rssi or 0, "BT5", logger)
 
-        print("[BLE] Scanning for Remote ID advertisements...", flush=True)
-        async with BleakScanner(on_advertisement,
-                                service_uuids=[REMOTE_ID_UUID]):
+        adapter_info = f" (adapter: {adapter})" if adapter else ""
+        print(f"[BLE] Scanning for Remote ID advertisements{adapter_info}...", flush=True)
+        kwargs = {"service_uuids": [REMOTE_ID_UUID]}
+        if adapter:
+            kwargs["adapter"] = adapter
+        async with BleakScanner(on_advertisement, **kwargs):
             while True:
                 await asyncio.sleep(3600)
 
@@ -415,6 +418,7 @@ class CsvLogger:
 def main():
     ap = argparse.ArgumentParser(description='OpenDroneID receiver for RPi4')
     ap.add_argument('--wifi',     default='wlan0',  help='WiFi interface in monitor mode')
+    ap.add_argument('--ble-adapter', default=None, help='BLE adapter e.g. hci1')
     ap.add_argument('--no-ble',   action='store_true')
     ap.add_argument('--no-wifi',  action='store_true')
     ap.add_argument('--no-gps',   action='store_true')
@@ -437,7 +441,7 @@ def main():
         t.start(); threads.append(t)
 
     if not args.no_ble:
-        t = threading.Thread(target=ble_scanner, args=(dm, logger), daemon=True)
+        t = threading.Thread(target=ble_scanner, args=(dm, args.ble_adapter, logger), daemon=True)
         t.start(); threads.append(t)
 
     if not args.no_wifi:
