@@ -31,7 +31,7 @@ public class OpenDroneIdDataManager {
 
     // Called from BleScanner — data is BlueZ ServiceData for UUID 0xFFFA:
     // [0x0D][msgCounter][25-byte message]  → offset = 2
-    void receiveDataBluetooth(byte[] data, String macAddress, int rssi, long timestampNanos,
+    public void receiveDataBluetooth(byte[] data, String macAddress, int rssi, long timestampNanos,
                               LogMessageEntry logMessageEntry, String transportType) {
         String macAddressCleaned = macAddress.replace(":", "");
         long macAddressLong = Long.parseLong(macAddressCleaned, 16);
@@ -43,7 +43,7 @@ public class OpenDroneIdDataManager {
 
     // Called from WiFiScanner — data is vendor IE payload from offset DriStartByteOffset(4):
     // [msgCounter][25-byte message]  → offset = 1
-    void receiveDataWiFiBeacon(byte[] data, String mac, long macLong, int rssi, long timeNano,
+    public void receiveDataWiFiBeacon(byte[] data, String mac, long macLong, int rssi, long timeNano,
                                LogMessageEntry logMessageEntry, String transportType) {
         OpenDroneIdParser.Message<?> message =
                 OpenDroneIdParser.parseData(data, 1, timeNano, logMessageEntry, receiverLocation);
@@ -99,6 +99,8 @@ public class OpenDroneIdDataManager {
                 handleSystem(ac, (OpenDroneIdParser.Message<OpenDroneIdParser.SystemMsg>) message); break;
             case OPERATOR_ID:
                 handleOperatorID(ac, (OpenDroneIdParser.Message<OpenDroneIdParser.OperatorID>) message); break;
+            default:
+                break;
         }
     }
 
