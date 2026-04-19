@@ -9,7 +9,7 @@ async def main():
         print(d.address, a.local_name, a.rssi)
         print("  svc:", a.service_data)
         print("  mfr:", a.manufacturer_data)
-    async with BleakScanner(cb, adapter="hci1"):
+    async with BleakScanner(cb, adapter="hci0"):
         print("Scanning 20s...")
         await asyncio.sleep(20)
 
